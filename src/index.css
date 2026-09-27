@@ -1,0 +1,304 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-display: "Fredoka", system-ui, -apple-system, sans-serif;
+    --font-body: "Inter", system-ui, -apple-system, sans-serif;
+    
+    /* Brand Color Palette */
+    --color-primary: #3730A3;
+    --color-primary-end: #312E81;
+    --color-accent: #2DD4BF;
+    --color-success: #22C55E;
+    --color-streak: #F97316;
+    --color-xp: #FACC15;
+    --color-danger: #EF4444;
+
+    /* Theme Surfaces (Dark Mode Only: Deep Navy #0B1020, Card Surfaces #131A2E) */
+    --bg-page: #0B1020;
+    --bg-card: #131A2E;
+    --bg-card-subtle: #19223D;
+    --border-card: rgba(255, 255, 255, 0.08);
+    --shadow-card: 0 8px 30px -4px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    --shadow-card-hover: 0 16px 36px -4px rgba(0, 0, 0, 0.6), 0 0 20px rgba(79, 70, 229, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.12);
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--bg-page);
+    line-height: 1.55;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+  }
+}
+
+/* Reusable Chaptr Card Styling */
+.chaptr-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-card);
+  border-radius: 1.5rem; /* rounded-3xl */
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+}
+
+.chaptr-card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* 3D Button Style: confident solid deep indigo with raised solid bottom edge */
+.btn-3d {
+  background-color: #3730A3;
+  color: #FFFFFF;
+  box-shadow: 0 4px 0 #1E1B4B;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.15s ease;
+  position: relative;
+  user-select: none;
+}
+
+.btn-3d:hover:not(:disabled) {
+  background-color: #312E81;
+  box-shadow: 0 5px 0 #1E1B4B, 0 8px 16px rgba(55, 48, 163, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-3d:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #1E1B4B;
+  background-color: #1E1B4B;
+}
+
+.btn-3d:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: 0 3px 0 #475569;
+}
+
+/* 3D Button Variant: Mint Accent */
+.btn-3d-mint {
+  background: linear-gradient(135deg, #2DD4BF 0%, #0D9488 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 0 #0F766E;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.15s ease;
+}
+.btn-3d-mint:hover:not(:disabled) {
+  filter: brightness(1.05);
+  box-shadow: 0 5px 0 #0F766E, 0 8px 16px rgba(45, 212, 191, 0.25);
+  transform: translateY(-1px);
+}
+.btn-3d-mint:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #0F766E;
+}
+
+/* 3D Button Variant: Success */
+.btn-3d-success {
+  background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 0 #15803D;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.btn-3d-success:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #15803D;
+}
+
+/* 3D Button Variant: Neutral (Dark) */
+.btn-3d-neutral {
+  background-color: #1E293B;
+  color: #F1F5F9;
+  box-shadow: 0 4px 0 #0F172A;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.15s ease;
+}
+.btn-3d-neutral:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 #0F172A;
+}
+.btn-3d-neutral:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #0F172A;
+}
+
+/* Glassmorphism nav with subtle blur and border (Dark) */
+.glass-nav {
+  background-color: rgba(11, 16, 32, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Mascot floating bob */
+@keyframes pip-bob {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(1deg);
+  }
+}
+
+@keyframes pip-blink {
+  0%, 96%, 100% {
+    transform: scaleY(1);
+  }
+  98% {
+    transform: scaleY(0.1);
+  }
+}
+
+.animate-pip-bob {
+  animation: pip-bob 3.2s ease-in-out infinite;
+}
+
+.animate-pip-blink {
+  transform-origin: center;
+  animation: pip-blink 4.5s ease-in-out infinite;
+}
+
+/* Streak flame glowing animation */
+@keyframes flame-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 2px #F97316);
+  }
+  50% {
+    transform: scale(1.14);
+    filter: drop-shadow(0 0 9px #F97316);
+  }
+}
+
+.animate-flame-pulse {
+  animation: flame-pulse 1.8s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+/* XP Bar Shimmer / Glow */
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer-active {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-active::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer-sweep 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Quiz Micro-Animations: Correct Pop/Bounce */
+@keyframes pop-bounce {
+  0% {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-pop-bounce {
+  animation: pop-bounce 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Floating +XP Pop */
+@keyframes float-xp {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.8);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-14px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-24px) scale(0.9);
+  }
+}
+
+.animate-float-xp {
+  animation: float-xp 1.2s ease-out forwards;
+}
+
+/* Wrong Answer Shake */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20%, 60% {
+    transform: translateX(-6px);
+  }
+  40%, 80% {
+    transform: translateX(6px);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.32s ease-in-out;
+}
+
+/* Subtle background dot pattern (Dark) */
+.bg-dot-pattern {
+  background-image: radial-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Card 3D perspective */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Respect user reduced motion accessibility settings */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-pip-bob,
+  .animate-pip-blink,
+  .animate-flame-pulse,
+  .shimmer-active::after,
+  .animate-shake,
+  .animate-pop-bounce,
+  .animate-float-xp {
+    animation: none !important;
+  }
+}

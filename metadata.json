@@ -1,0 +1,6 @@
+{
+  "name": "Chaptr",
+  "description": "Gamified book-learning web app turning books into interactive missions, spaced repetition quizzes, and mastery tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

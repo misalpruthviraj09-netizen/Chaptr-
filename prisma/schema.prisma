@@ -1,0 +1,182 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  passwordHash  String
+  timezone      String    @default("UTC")
+  xp            Int       @default(0)
+  level         Int       @default(1)
+  currentStreak Int       @default(0)
+  longestStreak Int       @default(0)
+  lastActiveDate String?
+  createdAt     DateTime  @default(now())
+
+  missionProgress MissionProgress[]
+  attempts        Attempt[]
+  reviewCards     ReviewCard[]
+  xpEvents        XpEvent[]
+  userBadges      UserBadge[]
+
+  @@index([email])
+  @@index([xp])
+}
+
+model Book {
+  id             String    @id @default(uuid())
+  slug           String    @unique
+  title          String
+  author         String
+  description    String
+  category       String
+  coverColor     String
+  coverPattern   String
+  isPublicDomain Boolean   @default(true)
+  licenseNote    String
+  isPublished    Boolean   @default(true)
+
+  missions       Mission[]
+
+  @@index([slug])
+  @@index([category])
+}
+
+model Mission {
+  id               String    @id @default(uuid())
+  bookId           String
+  order            Int
+  title            String
+  summary          String
+  lessonContent    String
+  estimatedMinutes Int       @default(5)
+
+  book             Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  questions        Question[]
+  progress         MissionProgress[]
+
+  @@index([bookId])
+  @@index([bookId, order])
+}
+
+model Question {
+  id           String       @id @default(uuid())
+  missionId    String
+  order        Int
+  type         String       // MCQ | TRUE_FALSE | SCENARIO | RECALL
+  prompt       String
+  options      String       // JSON string array of options
+  correctIndex Int
+  explanation  String
+  conceptTag   String
+
+  mission      Mission      @relation(fields: [missionId], references: [id], onDelete: Cascade)
+  attempts     Attempt[]
+  reviewCards  ReviewCard[]
+
+  @@index([missionId])
+  @@index([type])
+}
+
+model MissionProgress {
+  id          String    @id @default(uuid())
+  userId      String
+  missionId   String
+  status      String    @default("LOCKED") // LOCKED | UNLOCKED | COMPLETED
+  bestScore   Int       @default(0)
+  completedAt DateTime?
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mission     Mission   @relation(fields: [missionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, missionId])
+  @@index([userId])
+  @@index([missionId])
+}
+
+model Attempt {
+  id             String   @id @default(uuid())
+  userId         String
+  questionId     String
+  isCorrect      Boolean
+  isFirstAttempt Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question       Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([userId, questionId])
+  @@index([userId, isFirstAttempt])
+}
+
+model ReviewCard {
+  id           String    @id @default(uuid())
+  userId       String
+  questionId   String
+  easeFactor   Float     @default(2.5)
+  intervalDays Int       @default(1)
+  repetitions  Int       @default(0)
+  dueAt        DateTime  @default(now())
+  lastResult   Boolean?
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question     Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questionId])
+  @@index([userId, dueAt])
+}
+
+model XpEvent {
+  id        String   @id @default(uuid())
+  userId    String
+  amount    Int
+  reason    String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model Badge {
+  id          String      @id @default(uuid())
+  key         String      @unique
+  name        String
+  description String
+  icon        String
+  tier        String      // BRONZE | SILVER | GOLD
+
+  userBadges  UserBadge[]
+
+  @@index([key])
+}
+
+model UserBadge {
+  id       String   @id @default(uuid())
+  userId   String
+  badgeId  String
+  earnedAt DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge    Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+}
+
+model WaitlistEntry {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  role      String
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
